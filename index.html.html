@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D÷VIDE — Speciality Coffee & Ceremonial Matcha</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800;900&family=Barlow:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --black: #0A0A0A;
+    --cream: #F5F0EA;
+    --sand: #C4A882;
+    --espresso: #2B2218;
+    --taupe: #8C7B6B;
+    --sage: #4A5240;
+    --grain-opacity: 0.045;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--cream);
+    font-family: 'Barlow', sans-serif;
+    font-weight: 300;
+    cursor: none;
+    overflow-x: hidden;
+  }
+
+  /* CUSTOM CURSOR */
+  #cursor {
+    position: fixed;
+    width: 32px; height: 32px;
+    border: 1.5px solid var(--cream);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.12s ease, width 0.2s ease, height 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+    mix-blend-mode: difference;
+  }
+  #cursor.hovering {
+    width: 56px; height: 56px;
+    border-color: var(--sand);
+  }
+
+  /* GRAIN OVERLAY */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    opacity: var(--grain-opacity);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  section { position: relative; overflow: hidden; }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(36px);
+    transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-delay-1 { transition-delay: 0.12s; }
+  .reveal-delay-2 { transition-delay: 0.24s; }
+  .reveal-delay-3 { transition-delay: 0.36s; }
+  .reveal-delay-4 { transition-delay: 0.48s; }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 28px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  nav .logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 1.4rem;
+    letter-spacing: 0.12em;
+    color: var(--cream);
+    text-decoration: none;
+  }
+  nav .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+  nav .nav-links a {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 400;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--taupe);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  nav .nav-links a:hover { color: var(--cream); }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: var(--black);
+    padding: 120px 24px 80px;
+  }
+  #hero .hero-wordmark {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: clamp(6rem, 20vw, 18rem);
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    color: var(--cream);
+    animation: heroFade 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes heroFade {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: none; }
+  }
+  #hero .hero-wordmark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #hero .hero-wordmark .divmark {
+    margin: 0 0.18em;
+    display: inline-block;
+  }
+  #hero .hero-sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 300;
+    font-size: clamp(0.65rem, 1.4vw, 0.85rem);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--taupe);
+    margin-top: 28px;
+    animation: heroFade 1.4s 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  #hero .hero-cta {
+    display: inline-block;
+    margin-top: 72px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 400;
+    font-size: 0.8rem;
+    letter-spacing: 0.3em;
+    text-transform: lowercase;
+    color: var(--sand);
+    text-decoration: none;
+    border-bottom: 1px solid var(--sand);
+    padding-bottom: 4px;
+    animation: heroFade 1.4s 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  #hero .hero-cta:hover { color: var(--cream); border-color: var(--cream); }
+
+  /* WHO WE ARE */
+  #about {
+    background: var(--black);
+    padding: 140px 48px;
+  }
+  #about .about-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  #about .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--taupe);
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  #about .section-label::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--taupe);
+  }
+  #about h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--cream);
+    margin-bottom: 56px;
+    text-transform: uppercase;
+  }
+  #about p {
+    font-size: clamp(1rem, 1.6vw, 1.25rem);
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--taupe);
+    max-width: 640px;
+  }
+
+  /* WHAT WE DO */
+  #menu {
+    background: var(--espresso);
+    padding: 140px 48px;
+  }
+  #menu .menu-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  #menu .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--taupe);
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  #menu .section-label::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--taupe);
+  }
+  #menu h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--cream);
+    margin-bottom: 80px;
+    text-transform: uppercase;
+  }
+  #menu .menu-grid {
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+    gap: 0 60px;
+  }
+  .menu-divider {
+    background: var(--taupe);
+    opacity: 0.3;
+  }
+  .menu-col h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    letter-spacing: -0.01em;
+    color: var(--cream);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .menu-col .col-desc {
+    font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--taupe);
+    margin-bottom: 40px;
+    max-width: 360px;
+  }
+  .menu-col ul {
+    list-style: none;
+  }
+  .menu-col ul li {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 400;
+    font-size: clamp(1rem, 1.8vw, 1.2rem);
+    letter-spacing: 0.05em;
+    color: var(--sand);
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(196,168,130,0.15);
+    text-transform: uppercase;
+  }
+  .matcha-col h3 { color: var(--sage); }
+
+  /* SOURCING */
+  #sourcing {
+    background: var(--black);
+    padding: 140px 48px;
+  }
+  #sourcing .sourcing-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  #sourcing .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--taupe);
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  #sourcing .section-label::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--taupe);
+  }
+  #sourcing h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--cream);
+    margin-bottom: 56px;
+    text-transform: uppercase;
+  }
+  #sourcing p {
+    font-size: clamp(1rem, 1.6vw, 1.2rem);
+    font-weight: 300;
+    line-height: 1.85;
+    color: var(--taupe);
+    max-width: 620px;
+    margin-bottom: 28px;
+  }
+  #sourcing .sourcing-tags {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 48px;
+  }
+  .tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 400;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--taupe);
+    border: 1px solid rgba(140,123,107,0.3);
+    padding: 8px 20px;
+  }
+
+  /* AMANTHA */
+  #amantha {
+    background: var(--espresso);
+    padding: 140px 48px;
+    position: relative;
+  }
+  #amantha .grain-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.04;
+    pointer-events: none;
+  }
+  #amantha .amantha-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+  #amantha .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--taupe);
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  #amantha .section-label::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--taupe);
+  }
+  #amantha h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--cream);
+    margin-bottom: 80px;
+    text-transform: uppercase;
+  }
+  #amantha blockquote {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(1.4rem, 3.5vw, 2.6rem);
+    line-height: 1.35;
+    color: var(--cream);
+    border-left: 2px solid var(--sand);
+    padding-left: 40px;
+    margin-bottom: 48px;
+    max-width: 720px;
+  }
+  #amantha .amantha-bio {
+    font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--taupe);
+    max-width: 560px;
+  }
+  #amantha .amantha-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
+    letter-spacing: 0.05em;
+    color: var(--sand);
+    text-transform: uppercase;
+    margin-top: 32px;
+  }
+  #amantha .amantha-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 300;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--taupe);
+    margin-top: 6px;
+  }
+
+  /* LOCATIONS */
+  #locations {
+    background: var(--black);
+    padding: 140px 48px;
+  }
+  #locations .locations-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  #locations .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--taupe);
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  #locations .section-label::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--taupe);
+  }
+  #locations h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--cream);
+    margin-bottom: 80px;
+    text-transform: uppercase;
+  }
+  .locations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0;
+  }
+  .location-card {
+    border: 1px solid rgba(140,123,107,0.18);
+    padding: 44px 36px;
+    transition: background 0.3s;
+  }
+  .location-card:hover { background: var(--espresso); }
+  .location-card .loc-number {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 300;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--taupe);
+    margin-bottom: 24px;
+  }
+  .location-card h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--cream);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .location-card .loc-address {
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: var(--taupe);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .location-card .loc-hours {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 400;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sand);
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--espresso);
+    padding: 80px 48px;
+    text-align: center;
+    position: relative;
+  }
+  footer .footer-mark {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: clamp(3rem, 8vw, 6rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--cream);
+    opacity: 0.08;
+    margin-bottom: 40px;
+  }
+  footer .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  footer .footer-links a {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 400;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--taupe);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  footer .footer-links a:hover { color: var(--sand); }
+  footer .footer-copy {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 300;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--taupe);
+    opacity: 0.5;
+  }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    nav .nav-links { display: none; }
+    #about, #menu, #sourcing, #amantha, #locations { padding: 100px 24px; }
+    #menu .menu-grid { grid-template-columns: 1fr; gap: 60px 0; }
+    .menu-divider { display: none; }
+    footer { padding: 60px 24px; }
+    #amantha blockquote { padding-left: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">D÷VIDE</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#locations">Find Us</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero" class="grain">
+  <div class="hero-wordmark"><span>D</span><span class="divmark">÷</span><span>VIDE</span></div>
+  <p class="hero-sub">Speciality Coffee &nbsp;·&nbsp; Ceremonial Matcha &nbsp;·&nbsp; Colombo</p>
+  <a href="#about" class="hero-cta">find us ↓</a>
+</section>
+
+<!-- WHO WE ARE -->
+<section id="about" class="grain">
+  <div class="about-inner">
+    <p class="section-label reveal">Who We Are</p>
+    <h2 class="reveal reveal-delay-1">Not a café.<br>A ritual.</h2>
+    <p class="reveal reveal-delay-2">Divide is not a café. It's a ritual. Two drinks, done right. Specialty coffee sourced for character. Ceremonial-grade matcha treated with intention. In a city that never slows down, we built a reason to pause.</p>
+  </div>
+</section>
+
+<!-- WHAT WE DO -->
+<section id="menu" class="grain">
+  <div class="menu-inner">
+    <p class="section-label reveal">What We Do</p>
+    <h2 class="reveal reveal-delay-1">Two drinks.<br>Done right.</h2>
+    <div class="menu-grid">
+      <div class="menu-col reveal reveal-delay-2">
+        <h3>Coffee</h3>
+        <p class="col-desc">Specialty-grade beans selected for complexity and character. Brewed with precision. No shortcuts.</p>
+        <ul>
+          <li>Flat White</li>
+          <li>Ethiopian Single Origin</li>
+          <li>Brazil Blend</li>
+          <li>Iced Divide Coffee</li>
+          <li>Espresso</li>
+        </ul>
+      </div>
+      <div class="menu-divider"></div>
+      <div class="menu-col matcha-col reveal reveal-delay-3">
+        <h3>Matcha</h3>
+        <p class="col-desc">Ceremonial-grade. Stone-ground. Treated with the same seriousness as our coffee. Nothing less.</p>
+        <ul>
+          <li>Ceremonial Matcha</li>
+          <li>Strawberry Matcha</li>
+          <li>Iced Matcha Latte</li>
+          <li>Oat Milk Matcha</li>
+          <li>Traditional Bowl</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOURCING -->
+<section id="sourcing" class="grain">
+  <div class="sourcing-inner">
+    <p class="section-label reveal">The Sourcing</p>
+    <h2 class="reveal reveal-delay-1">Sourced with<br>intention.</h2>
+    <p class="reveal reveal-delay-2">Our coffee is specialty-grade. Ethiopian and Brazilian single-origin beans, chosen for their distinct character and traceable provenance. Nothing commodity. Nothing anonymous.</p>
+    <p class="reveal reveal-delay-3">Our matcha is ceremonial grade — the highest classification in Japanese production. Stone-ground, shade-grown, and handled with care from harvest to cup.</p>
+    <p class="reveal reveal-delay-4" style="font-style: italic; color: var(--sand);">"We work with growers who take their craft as seriously as we take ours."</p>
+    <div class="sourcing-tags reveal">
+      <span class="tag">Specialty Coffee</span>
+      <span class="tag">Ethiopian Origin</span>
+      <span class="tag">Brazilian Blend</span>
+      <span class="tag">Ceremonial Matcha</span>
+      <span class="tag">Stone Ground</span>
+    </div>
+  </div>
+</section>
+
+<!-- AMANTHA -->
+<section id="amantha">
+  <div class="grain-overlay"></div>
+  <div class="amantha-inner">
+    <p class="section-label reveal">Behind the Cup</p>
+    <h2 class="reveal reveal-delay-1">The person<br>behind it.</h2>
+    <blockquote class="reveal reveal-delay-2">"I've always believed in creating things that become part of people's lifestyle — not just products they buy."</blockquote>
+    <p class="amantha-bio reveal reveal-delay-3">Amantha Perera is 23, a stand-up comedian, digital content creator, and now Colombo's first Divide franchisee. The Nawam Mawatha location is his. He didn't open a café — he built something cultural.</p>
+    <p class="amantha-name reveal reveal-delay-4">Amantha Perera</p>
+    <p class="amantha-title reveal reveal-delay-4">Franchise Owner &nbsp;·&nbsp; Entrepreneur &nbsp;·&nbsp; Stand-up Comedian</p>
+  </div>
+</section>
+
+<!-- LOCATIONS -->
+<section id="locations" class="grain">
+  <div class="locations-inner">
+    <p class="section-label reveal">Find Us</p>
+    <h2 class="reveal reveal-delay-1">Where to<br>find Divide.</h2>
+    <div class="locations-grid">
+      <div class="location-card reveal reveal-delay-1">
+        <p class="loc-number">01</p>
+        <h3>Ward Place</h3>
+        <p class="loc-address">Ward Place<br>Colombo 07</p>
+        <p class="loc-hours">7:30 AM – 6:00 PM Daily</p>
+      </div>
+      <div class="location-card reveal reveal-delay-2">
+        <p class="loc-number">02</p>
+        <h3>Nawam Mawatha</h3>
+        <p class="loc-address">Nawam Mawatha<br>Colombo 02</p>
+        <p class="loc-hours">7:30 AM – 6:00 PM Daily</p>
+      </div>
+      <div class="location-card reveal reveal-delay-3">
+        <p class="loc-number">03</p>
+        <h3>Rajagiriya</h3>
+        <p class="loc-address">Rajagiriya<br>Colombo</p>
+        <p class="loc-hours">7:30 AM – 6:00 PM Daily</p>
+      </div>
+      <div class="location-card reveal reveal-delay-4">
+        <p class="loc-number">04</p>
+        <h3>Kurunegala</h3>
+        <p class="loc-address">Kurunegala</p>
+        <p class="loc-hours">7:30 AM – 6:00 PM Daily</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p class="footer-mark"><span>D</span><span style="margin:0 0.15em">÷</span><span>VIDE</span></p>
+  <div class="footer-links">
+    <a href="https://instagram.com/drinkdivide" target="_blank">@drinkdivide</a>
+    <a href="#">Uber Eats</a>
+    <a href="#about">About</a>
+    <a href="#locations">Locations</a>
+  </div>
+  <p class="footer-copy">© 2025 Divide — Speciality Coffee & Ceremonial Matcha &nbsp;·&nbsp; Colombo, Sri Lanka</p>
+</footer>
+
+<script>
+  // CURSOR
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+  });
+  document.querySelectorAll('a, button, .location-card').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+  });
+
+  // SCROLL REVEAL
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
